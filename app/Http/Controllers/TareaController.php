@@ -17,20 +17,28 @@ class TareaController extends Controller
 
     public function show($id)
     {
-        $token = session('token');
+        $response = Http::get("http://localhost:8001/api/tareas/{$id}");
+        $tarea = $response->json();
 
-        $tarea = Http::get("http://localhost:8001/api/tareas/{$id}")->json();
-        $comentarios = Http::get("http://localhost:8001/api/tareas/{$id}/comentarios")->json();
-
-        $puedeEditar = false;
-
-        if ($token) {
-            $user = Http::withToken($token)->get('http://localhost:8000/api/me')->json();
-            $puedeEditar = $tarea['autor_id'] == $user['id'];
+        if (!$tarea) {
+            abort(404);
         }
 
-        return view('tareas.show', compact('tarea', 'comentarios', 'puedeEditar', 'token'));
+        $comentarios = $tarea['comentarios'] ?? [];
+
+        $authUser = session('auth_user');
+        $puedeEditar = $authUser && isset($authUser['id']) && $authUser['id'] == $tarea['autor_id'];
+
+        return view('tareas.show', [
+            'tarea' => $tarea,
+            'comentarios' => $comentarios,
+            'token' => session('token'),
+            'puedeEditar' => $puedeEditar,
+        ]);
     }
+
+
+
 
     public function create()
     {
