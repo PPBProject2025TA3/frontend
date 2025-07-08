@@ -51,15 +51,32 @@ class TareaController extends Controller
 
         $categorias = array_map('trim', explode(',', $request->categorias ?? ''));
 
+        $usuarios_asignados = [];
+
+        $fecha_expiracion = \Carbon\Carbon::createFromFormat(
+            'Y-m-d\TH:i', 
+            $request->fecha_expiracion
+        )->format('Y-m-d H:i:s');
+
         $data = [
-            'titulo' => $request->titulo,
-            'cuerpo' => $request->cuerpo,
-            'usuario_asignado_id' => $request->usuario_asignado_id,
-            'fecha_expiracion' => $request->fecha_expiracion,
-            'categorias' => $categorias,
+            "titulo" => $request->titulo,
+            "estado_actual" => "pendiente",
+            "usuario_creador_id" => 1,
+            "fecha_hora" => "2025-07-06 22:30:00",
+            "accion" => "creacion",
+            "autor_id" => 1,
+            "descripcion" => $request->cuerpo,
+            "fecha_inicio" => "2025-07-06 20:00:00",
+            "fecha_vencimiento" => $fecha_expiracion,
+            "estado" => "pendiente",
+            "categorias" => $categorias,
+            "asignados" => $usuarios_asignados,
         ];
 
-        $response = Http::withToken($token)->post('http://localhost:8001/api/tareas', $data);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json'
+        ])->post('http://localhost:8001/api/tareas', $data);
 
         if ($response->successful()) {
             return redirect('/');

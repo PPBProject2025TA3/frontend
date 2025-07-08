@@ -18,17 +18,16 @@ Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/', [TareaController::class, 'index']);
 
-Route::get('/tareas/create', [TareaController::class, 'create'])->middleware(AuthCustom::class);
-
 Route::get('/logout', [AuthController::class, 'logout'])->middleware(AuthCustom::class);
+Route::post('/tareas', [TareaController::class, 'store']);
+Route::put('/tareas/{id}', [TareaController::class, 'update']);
+Route::delete('/tareas/{id}', [TareaController::class, 'destroy']);
+Route::post('/tareas/{id}/comentarios', [ComentarioController::class, 'store']);
 
 Route::middleware(AuthCustom::class)->group(function () {
-    Route::post('/tareas', [TareaController::class, 'store']);
+    Route::get('/tareas/create', [TareaController::class, 'create'])->middleware(AuthCustom::class);
     Route::get('/tareas/{id}/edit', [TareaController::class, 'edit']);
-    Route::put('/tareas/{id}', [TareaController::class, 'update']);
-    Route::delete('/tareas/{id}', [TareaController::class, 'destroy']);
-    Route::post('/tareas/{id}/comentarios', [ComentarioController::class, 'store']);
 });
 
-
 Route::get('/tareas/{id}', [TareaController::class, 'show']);
+

@@ -11,11 +11,8 @@
     <label>Cuerpo:</label>
     <textarea name="cuerpo" required></textarea><br>
 
-    <label>Usuario asignado (ID):</label>
-    <input type="number" name="usuario_asignado_id"><br>
-
     <label>Fecha de expiración (opcional):</label>
-    <input type="date" name="fecha_expiracion"><br>
+    <input type="datetime-local" name="fecha_expiracion"><br>
 
     <label>Categorías (separadas por coma):</label>
     <input type="text" name="categorias"><br>
